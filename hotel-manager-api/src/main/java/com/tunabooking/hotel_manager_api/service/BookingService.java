@@ -28,9 +28,10 @@ public class BookingService {
 
     @Transactional
     public BookingResponse createBooking(BookingRequest request) {
-        
+
         // 1. Validate dates
-        if (request.getCheckOutDate().isBefore(request.getCheckInDate()) || request.getCheckOutDate().isEqual(request.getCheckInDate())) {
+        if (request.getCheckOutDate().isBefore(request.getCheckInDate())
+                || request.getCheckOutDate().isEqual(request.getCheckInDate())) {
             throw new IllegalArgumentException("Check-out date must be after check-in date");
         }
 
@@ -48,8 +49,7 @@ public class BookingService {
                 request.getRoomId(),
                 List.of(BookingStatus.CONFIRMED, BookingStatus.PENDING),
                 request.getCheckInDate(),
-                request.getCheckOutDate()
-        );
+                request.getCheckOutDate());
 
         if (isOverlapping) {
             throw new RuntimeException("Room is not available for the selected dates");
@@ -72,6 +72,33 @@ public class BookingService {
         Booking savedBooking = bookingRepository.save(booking);
 
         return mapToResponse(savedBooking);
+    }
+
+    @Transactional(readOnly = true)
+    public List<BookingResponse> getMyBookings() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Current user not found"));
+
+        return bookingRepository.findByUserId(currentUser.getId()).stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    @Transactional
+    public void deleteBooking(Long id) {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + id));
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Current user not found"));
+
+        if (!booking.getUser().getId().equals(currentUser.getId())) {
+            throw new RuntimeException("Not authorized to delete this booking");
+        }
+
+        bookingRepository.delete(booking);
     }
 
     private BookingResponse mapToResponse(Booking booking) {

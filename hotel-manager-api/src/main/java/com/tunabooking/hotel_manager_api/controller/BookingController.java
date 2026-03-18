@@ -10,15 +10,19 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/bookings")
 @RequiredArgsConstructor
-@Tag(name = "Booking", description = "Endpoints for managing bookings")
 @SecurityRequirement(name = "bearerAuth")
 public class BookingController {
 
@@ -29,5 +33,19 @@ public class BookingController {
     public ResponseEntity<BookingResponse> createBooking(@Valid @RequestBody BookingRequest request) {
         BookingResponse response = bookingService.createBooking(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Get my bookings", description = "Get all bookings for the currently authenticated user")
+    @GetMapping("/my")
+    public ResponseEntity<List<BookingResponse>> getMyBookings() {
+        List<BookingResponse> responses = bookingService.getMyBookings();
+        return ResponseEntity.ok(responses);
+    }
+
+    @Operation(summary = "Delete a booking", description = "Delete a booking by its ID")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBooking(@PathVariable Long id) {
+        bookingService.deleteBooking(id);
+        return ResponseEntity.noContent().build();
     }
 }
