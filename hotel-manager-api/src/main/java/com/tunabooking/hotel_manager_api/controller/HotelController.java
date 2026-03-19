@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import com.tunabooking.hotel_manager_api.dto.response.ReviewResponse;
+import com.tunabooking.hotel_manager_api.service.ReviewService;
+
 @RestController
 @RequestMapping("/hotels")
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ public class HotelController {
 
     private final HotelService hotelService;
     private final RoomService roomService;
+    private final ReviewService reviewService;
 
     @Operation(summary = "Get all hotels", description = "Retrieve a list of all hotels")
     @GetMapping
@@ -39,5 +43,11 @@ public class HotelController {
     @GetMapping("/{id}/rooms")
     public ResponseEntity<List<RoomResponse>> getRoomsByHotelId(@PathVariable Long id) {
         return ResponseEntity.ok(roomService.getRoomsByHotelId(id));
+    }
+
+    @Operation(summary = "Get reviews by hotel ID", description = "Retrieve a list of reviews belonging to a specific hotel")
+    @GetMapping("/{id}/reviews")
+    public ResponseEntity<List<ReviewResponse>> getReviewsByHotelId(@PathVariable Long id) {
+        return ResponseEntity.ok(reviewService.getReviewsByHotelId(id));
     }
 }

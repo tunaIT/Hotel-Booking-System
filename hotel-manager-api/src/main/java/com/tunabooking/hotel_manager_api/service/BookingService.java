@@ -53,7 +53,7 @@ public class BookingService {
                                 request.getCheckOutDate());
 
                 if (isOverlapping) {
-                        throw new RuntimeException("Room is not available for the selected dates");
+                        throw new InvalidBookingException("Room is not available for the selected dates");
                 }
 
                 long daysBetween = ChronoUnit.DAYS.between(request.getCheckInDate(), request.getCheckOutDate());
