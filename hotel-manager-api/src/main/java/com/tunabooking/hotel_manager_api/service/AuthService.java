@@ -6,6 +6,7 @@ import com.tunabooking.hotel_manager_api.dto.request.RegisterRequest;
 import com.tunabooking.hotel_manager_api.dto.response.AuthResponse;
 import com.tunabooking.hotel_manager_api.entity.Role;
 import com.tunabooking.hotel_manager_api.entity.User;
+import com.tunabooking.hotel_manager_api.exception.UserNotFoundException;
 import com.tunabooking.hotel_manager_api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,46 +18,44 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
+        private final UserRepository userRepository;
+        private final PasswordEncoder passwordEncoder;
+        private final JwtService jwtService;
+        private final AuthenticationManager authenticationManager;
 
-    public AuthResponse register(RegisterRequest request) {
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already exists");
+        public AuthResponse register(RegisterRequest request) {
+                if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+                        throw new RuntimeException("Email already exists");
+                }
+
+                var user = User.builder()
+                                .name(request.getName())
+                                .email(request.getEmail())
+                                .password(passwordEncoder.encode(request.getPassword()))
+                                .role(Role.USER) // Default role
+                                .build();
+
+                userRepository.save(user);
+                var jwtToken = jwtService.generateToken(user);
+
+                return AuthResponse.builder()
+                                .token(jwtToken)
+                                .build();
         }
 
-        var user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER) // Default role
-                .build();
-        
-        userRepository.save(user);
-        var jwtToken = jwtService.generateToken(user);
-        
-        return AuthResponse.builder()
-                .token(jwtToken)
-                .build();
-    }
+        public AuthResponse login(AuthRequest request) {
+                authenticationManager.authenticate(
+                                new UsernamePasswordAuthenticationToken(
+                                                request.getEmail(),
+                                                request.getPassword()));
 
-    public AuthResponse login(AuthRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
-        
-        var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-                
-        var jwtToken = jwtService.generateToken(user);
-        
-        return AuthResponse.builder()
-                .token(jwtToken)
-                .build();
-    }
+                var user = userRepository.findByEmail(request.getEmail())
+                                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+                var jwtToken = jwtService.generateToken(user);
+
+                return AuthResponse.builder()
+                                .token(jwtToken)
+                                .build();
+        }
 }

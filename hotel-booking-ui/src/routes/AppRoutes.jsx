@@ -2,7 +2,9 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
 import HomePage from '../pages/HomePage';
+import HotelList from '../pages/HotelList';
 import ProtectedRoute from './ProtectedRoute';
+import MainLayout from '../components/layout/MainLayout';
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { Loader2 } from 'lucide-react';
@@ -29,10 +31,14 @@ const AppRoutes = () => {
         </PublicRoute>
       } />
       
-      {/* Protected Routes */}
+      {/* Protected Routes using MainLayout */}
       <Route element={<ProtectedRoute />}>
-        <Route path="/" element={<HomePage />} />
-        {/* Add more protected routes here like /hotels, /bookings */}
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/hotels" element={<HotelList />} />
+          <Route path="/hotels/:id" element={<HotelDetail />} />
+          {/* Add more protected routes here like /bookings */}
+        </Route>
       </Route>
 
       {/* Catch all */}

@@ -21,10 +21,8 @@ const LoginForm = () => {
     setLoading(true);
     
     try {
-      const { data } = await loginApi(formData);
-      // Assuming the backend returns { data: { token: '...' } } or similar.
-      // Adjust according to the actual backend response format
-      const token = data?.token || data; 
+      const response = await loginApi(formData);
+      const token = response?.token || response; 
       login(token);
       navigate('/');
     } catch (err) {
