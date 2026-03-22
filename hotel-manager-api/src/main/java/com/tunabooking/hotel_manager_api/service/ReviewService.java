@@ -46,7 +46,14 @@ public class ReviewService {
                 .rating(request.getRating())
                 .comment(request.getComment())
                 .build();
-        reviewRepository.save(review);
+        reviewRepository.saveAndFlush(review);
+
+        Double averageRating = reviewRepository.findAverageRatingByHotelId(hotel.getId());
+        if (averageRating != null) {
+            hotel.setRating(Math.round(averageRating * 10.0) / 10.0);
+            hotelRepository.save(hotel);
+        }
+
         return ReviewResponse.builder()
                 .userName(review.getUser().getName())
                 .hotelName(review.getHotel().getName())

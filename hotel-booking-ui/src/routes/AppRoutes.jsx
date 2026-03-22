@@ -3,6 +3,10 @@ import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
 import HomePage from '../pages/HomePage';
 import HotelList from '../pages/HotelList';
+import HotelDetail from '../pages/HotelDetail';
+import CheckoutPage from '../pages/CheckoutPage';
+import BookingSuccessPage from '../pages/BookingSuccessPage';
+import MyBookingsPage from '../pages/MyBookingsPage';
 import ProtectedRoute from './ProtectedRoute';
 import MainLayout from '../components/layout/MainLayout';
 import { useContext } from 'react';
@@ -37,6 +41,9 @@ const AppRoutes = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/hotels" element={<HotelList />} />
           <Route path="/hotels/:id" element={<HotelDetail />} />
+          <Route path="/checkout/:roomId" element={<CheckoutPage />} />
+          <Route path="/booking-success" element={<BookingSuccessPage />} />
+          <Route path="/my-bookings" element={<MyBookingsPage />} />
           {/* Add more protected routes here like /bookings */}
         </Route>
       </Route>

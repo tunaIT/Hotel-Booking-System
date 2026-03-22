@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
-import { LogOut, User } from 'lucide-react';
+import { LogOut, User, Calendar } from 'lucide-react';
 
 const Navbar = () => {
   const { isAuthenticated, logout } = useContext(AuthContext);
@@ -40,6 +40,10 @@ const Navbar = () => {
           <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
             {isAuthenticated ? (
               <>
+                <Link to="/my-bookings" className="flex items-center space-x-2 text-gray-600 group hover:text-blue-600 transition-colors cursor-pointer mr-4">
+                  <Calendar size={20} />
+                  <span className="text-sm font-medium">My Bookings</span>
+                </Link>
                 <div className="flex items-center space-x-2 text-gray-600 group hover:text-blue-600 transition-colors cursor-pointer">
                   <User size={20} />
                   <span className="text-sm font-medium">Profile</span>

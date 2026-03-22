@@ -150,7 +150,10 @@ const HotelDetail = () => {
                   </div>
                 </div>
                 
-                <button className="w-full bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-600 font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center">
+                <button 
+                  onClick={() => navigate(`/checkout/${room.id}`, { state: { room, hotel } })}
+                  className="w-full bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-600 font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
+                >
                   <CreditCard className="w-5 h-5 mr-2" />
                   Book this Room
                 </button>
