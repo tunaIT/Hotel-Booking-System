@@ -9,8 +9,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+import com.tunabooking.hotel_manager_api.specification.HotelSpecification;
+import org.springframework.data.jpa.domain.Specification;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +30,18 @@ public class HotelService {
         return hotelRepository.findAll().stream()
                 .map(this::mapToHotelResponse)
                 .collect(Collectors.toList());
+    }
+
+    public Page<HotelResponse> searchHotels(String city, BigDecimal minPrice, BigDecimal maxPrice, Integer capacity, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        
+        Specification<Hotel> spec = Specification.where(HotelSpecification.hasCity(city))
+                .and(HotelSpecification.hasPriceBetween(minPrice, maxPrice))
+                .and(HotelSpecification.hasRoomCapacity(capacity));
+
+        Page<Hotel> hotelPage = hotelRepository.findAll(spec, pageable);
+
+        return hotelPage.map(this::mapToHotelResponse);
     }
 
     public HotelResponse getHotelById(Long id) {

@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
+import java.math.BigDecimal;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.RequestParam;
 import com.tunabooking.hotel_manager_api.dto.response.ReviewResponse;
 import com.tunabooking.hotel_manager_api.service.ReviewService;
 
@@ -27,10 +29,17 @@ public class HotelController {
     private final RoomService roomService;
     private final ReviewService reviewService;
 
-    @Operation(summary = "Get all hotels", description = "Retrieve a list of all hotels")
+    @Operation(summary = "Search all hotels", description = "Retrieve a paginated list of all hotels, optionally filtered by city, price range, and room capacity")
     @GetMapping
-    public ResponseEntity<List<HotelResponse>> getAllHotels() {
-        return ResponseEntity.ok(hotelService.getAllHotels());
+    public ResponseEntity<Page<HotelResponse>> getHotels(
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false) Integer capacity,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(hotelService.searchHotels(city, minPrice, maxPrice, capacity, page, size));
     }
 
     @Operation(summary = "Get a hotel by ID", description = "Retrieve details of a specific hotel by its ID")
