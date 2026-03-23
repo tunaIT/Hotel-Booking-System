@@ -36,7 +36,10 @@ public class AuthService {
                                 .build();
 
                 userRepository.save(user);
-                var jwtToken = jwtService.generateToken(user);
+                
+                var extraClaims = new java.util.HashMap<String, Object>();
+                extraClaims.put("roles", java.util.List.of("ROLE_" + user.getRole().name()));
+                var jwtToken = jwtService.generateToken(extraClaims, user);
 
                 return AuthResponse.builder()
                                 .token(jwtToken)
@@ -52,7 +55,9 @@ public class AuthService {
                 var user = userRepository.findByEmail(request.getEmail())
                                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-                var jwtToken = jwtService.generateToken(user);
+                var extraClaims = new java.util.HashMap<String, Object>();
+                extraClaims.put("roles", java.util.List.of("ROLE_" + user.getRole().name()));
+                var jwtToken = jwtService.generateToken(extraClaims, user);
 
                 return AuthResponse.builder()
                                 .token(jwtToken)

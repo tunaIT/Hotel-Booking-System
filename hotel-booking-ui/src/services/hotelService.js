@@ -2,15 +2,18 @@ import api from './api';
 
 const hotelService = {
   // Get paginated list of hotels with optional keyword and other filters
-  getHotels: async ({ page = 0, size = 10, keyword = '', ...params }) => {
+  getHotels: async ({ page = 0, size = 10, keyword = '', city, capacity, minPrice, maxPrice, ...params }) => {
     try {
-      // Backend likely uses standard Spring Data pagination (page, size)
-      // and maybe a keyword param for search, adjust to match exact API
+      // Backend uses standard Spring Data pagination (page, size)
+      // along with optional city, minPrice, maxPrice, capacity params
       const response = await api.get('/hotels', {
         params: {
           page,
           size,
-          keyword: keyword || undefined,
+          city: city || (keyword ? keyword : undefined), // map keyword to city if backend uses city
+          capacity: capacity || undefined,
+          minPrice: minPrice || undefined,
+          maxPrice: maxPrice || undefined,
           ...params
         }
       });
