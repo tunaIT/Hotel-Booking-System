@@ -24,7 +24,7 @@ const AdminDashboard = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center space-x-4 cursor-pointer hover:shadow-md transition-shadow">
+          <div onClick={() => window.location.href='/admin/hotels'} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center space-x-4 cursor-pointer hover:shadow-md transition-shadow ring-2 ring-transparent hover:ring-blue-200">
             <div className="bg-blue-100 p-4 rounded-xl">
               <Hotel className="w-8 h-8 text-blue-600" />
             </div>
@@ -44,7 +44,7 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center space-x-4 cursor-pointer hover:shadow-md transition-shadow">
+          <div onClick={() => window.location.href='/admin/users'} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center space-x-4 cursor-pointer hover:shadow-md transition-shadow ring-2 ring-transparent hover:ring-purple-200">
             <div className="bg-purple-100 p-4 rounded-xl">
               <Users className="w-8 h-8 text-purple-600" />
             </div>

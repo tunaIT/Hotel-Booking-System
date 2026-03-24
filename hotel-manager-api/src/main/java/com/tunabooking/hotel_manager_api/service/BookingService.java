@@ -103,12 +103,16 @@ public class BookingService {
         private BookingResponse mapToResponse(Booking booking) {
                 return BookingResponse.builder()
                                 .id(booking.getId())
-                                .userId(booking.getUser().getId())
-                                .roomId(booking.getRoom().getId())
+                                .roomType(booking.getRoom().getRoomType())
+                                .hotelName(booking.getRoom().getHotel().getName())
+                                .hotelCity(booking.getRoom().getHotel().getCity())
+                                .hotelRating(booking.getRoom().getHotel().getRating())
+                                .roomCapacity(booking.getRoom().getCapacity())
                                 .checkInDate(booking.getCheckInDate())
                                 .checkOutDate(booking.getCheckOutDate())
                                 .totalPrice(booking.getTotalPrice())
                                 .status(booking.getStatus())
+                                .createdAt(booking.getCreatedAt())
                                 .build();
         }
 }

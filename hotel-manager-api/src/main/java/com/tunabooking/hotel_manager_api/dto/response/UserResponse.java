@@ -23,6 +23,9 @@ public class UserResponse {
     @Schema(description = "User's email address", example = "tuan.tran@example.com")
     private String email;
 
+    @Schema(description = "User's role", example = "USER")
+    private com.tunabooking.hotel_manager_api.entity.Role role;
+
     @Schema(description = "Timestamp when the user was created", example = "2026-03-15T10:00:00")
     private LocalDateTime createdAt;
 }

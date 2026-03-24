@@ -1,36 +1,36 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { format, parseISO } from 'date-fns';
-import { Calendar, Trash2, Clock, CheckCircle2, ChevronRight, AlertCircle, Loader2 } from 'lucide-react';
+import { Calendar, Trash2, Clock, CheckCircle2, ChevronRight, AlertCircle, Loader2, MapPin, Star, Users, Home, Building2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import bookingService from '../services/bookingService';
 
 const StatusBadge = ({ status }) => {
-  switch (status) {
-    case 'PENDING':
-      return <span className="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Pending</span>;
-    case 'CONFIRMED':
-      return <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Confirmed</span>;
-    case 'CANCELLED':
-      return <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">Cancelled</span>;
-    case 'COMPLETED':
-      return <span className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Completed</span>;
-    default:
-      return <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">{status}</span>;
-  }
+  const styles = {
+    PENDING: "bg-amber-50 text-amber-600 border-amber-200",
+    CONFIRMED: "bg-emerald-50 text-emerald-600 border-emerald-200",
+    CANCELLED: "bg-rose-50 text-rose-600 border-rose-200",
+    COMPLETED: "bg-slate-50 text-slate-600 border-slate-200"
+  };
+  const defaultStyle = "bg-blue-50 text-blue-600 border-blue-200";
+  const appliedStyle = styles[status] || defaultStyle;
+
+  return (
+    <span className={`px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border ${appliedStyle}`}>
+      {status || 'UNKNOWN'}
+    </span>
+  );
 };
 
 const MyBookingsPage = () => {
   const queryClient = useQueryClient();
   const [selectedBookingToCancel, setSelectedBookingToCancel] = useState(null);
 
-  // Fetch bookings
   const { data: bookings, isLoading, isError, error } = useQuery({
     queryKey: ['my-bookings'],
     queryFn: bookingService.getMyBookings,
   });
 
-  // Cancel booking mutation
   const cancelMutation = useMutation({
     mutationFn: bookingService.deleteBooking,
     onSuccess: () => {
@@ -56,8 +56,11 @@ const MyBookingsPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-[50vh]">
-        <Loader2 className="w-10 h-10 animate-spin text-blue-600" />
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <div className="flex flex-col items-center">
+          <Loader2 className="w-12 h-12 animate-spin text-blue-600 mb-4" />
+          <p className="text-slate-500 font-medium animate-pulse">Loading your bookings...</p>
+        </div>
       </div>
     );
   }
@@ -65,66 +68,121 @@ const MyBookingsPage = () => {
   if (isError) {
     return (
       <div className="max-w-4xl mx-auto py-12 px-4">
-        <div className="bg-red-50 text-red-700 p-6 rounded-xl border border-red-100">
-          <h3 className="font-semibold text-lg flex items-center mb-2">
-            <AlertCircle className="w-5 h-5 mr-2" /> 
-            Failed to load bookings
-          </h3>
-          <p>{error.message}</p>
+        <div className="bg-red-50 text-red-700 p-6 rounded-2xl border border-red-100 flex items-start shadow-sm">
+          <AlertCircle className="w-6 h-6 mr-3 flex-shrink-0 mt-0.5" />
+          <div>
+            <h3 className="font-semibold text-lg mb-1">Failed to load bookings</h3>
+            <p className="text-red-600/80">{error.message}</p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto pb-12 px-4 sm:px-6">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8 pt-4">My Bookings</h1>
+    <div className="max-w-5xl mx-auto pb-20 px-4 sm:px-6">
+      <div className="py-8">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-indigo-600 mb-2">My Bookings</h1>
+        <p className="text-slate-500">Manage your past and upcoming hotel reservations.</p>
+      </div>
 
       {!bookings || bookings.length === 0 ? (
-        <div className="bg-white border text-center border-gray-100 p-12 rounded-2xl shadow-sm">
-          <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h2 className="text-xl font-medium text-gray-900 mb-2">No bookings yet</h2>
-          <p className="text-gray-500">Looks like you haven't made any reservations.</p>
+        <div className="bg-white/60 backdrop-blur-md border border-slate-200 text-center p-16 rounded-3xl shadow-sm flex flex-col items-center justify-center">
+          <div className="w-24 h-24 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-6">
+            <Calendar className="w-12 h-12" />
+          </div>
+          <h2 className="text-2xl font-bold text-slate-800 mb-3">No bookings found</h2>
+          <p className="text-slate-500 max-w-md mx-auto">You haven't made any reservations yet. Start exploring our hotels to find your next perfect stay.</p>
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="grid gap-6">
           {bookings.map((booking) => (
-            <div key={booking.id} className="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden flex flex-col sm:flex-row transition-all hover:shadow-md">
+            <div key={booking.id} className="group bg-white rounded-3xl shadow-[0_2px_10px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-slate-100 overflow-hidden transition-all duration-300 flex flex-col md:flex-row">
               
-              <div className="p-6 flex-grow flex flex-col justify-center">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-1">Room #{booking.roomId}</h3>
-                    <p className="text-sm text-gray-500 font-medium">Booking Reference: #{booking.id}</p>
+              {/* Decorative side accent */}
+              <div className="hidden md:block w-2 bg-gradient-to-b from-blue-500 to-indigo-600"></div>
+
+              <div className="p-6 md:p-8 flex-grow flex flex-col justify-between">
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="flex items-start md:items-center gap-3">
+                      <div className="w-10 h-10 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 flex-shrink-0 mt-1 md:mt-0">
+                        <Building2 className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl md:text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                          {booking.hotelName || `Hotel Booking`}
+                        </h3>
+                        <div className="flex items-center gap-3 text-sm text-slate-500 mt-1">
+                          {booking.hotelCity && (
+                            <span className="flex items-center text-slate-500"><MapPin className="w-3.5 h-3.5 mr-1" />{booking.hotelCity}</span>
+                          )}
+                          {booking.hotelRating && (
+                            <span className="flex items-center text-amber-500 font-medium"><Star className="w-3.5 h-3.5 mr-1 fill-amber-500" />{booking.hotelRating}</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="block md:hidden"><StatusBadge status={booking.status || 'CONFIRMED'} /></div>
                   </div>
-                  <StatusBadge status={booking.status || 'CONFIRMED'} />
+
+                  <div className="mt-6 p-4 bg-slate-50/80 rounded-2xl border border-slate-100 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none"></div>
+                    <div>
+                      <p className="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Room Info</p>
+                      <p className="font-semibold text-slate-800 flex items-center">
+                        <Home className="w-4 h-4 mr-2 text-slate-400" />
+                        {booking.roomType ? booking.roomType : `Room #${booking.roomId}`}
+                      </p>
+                      {booking.roomCapacity && (
+                        <p className="text-sm text-slate-500 flex items-center mt-1">
+                          <Users className="w-3.5 h-3.5 mr-2 text-slate-400" />
+                          {booking.roomCapacity} {booking.roomCapacity > 1 ? 'Guests' : 'Guest'}
+                        </p>
+                      )}
+                    </div>
+                    <div className="hidden sm:block w-px h-10 bg-slate-200"></div>
+                    <div className="flex gap-8">
+                      <div>
+                        <p className="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Check-in</p>
+                        <p className="font-semibold text-slate-800">{booking.checkInDate ? format(parseISO(booking.checkInDate), 'MMM dd, yyyy') : 'N/A'}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Check-out</p>
+                        <p className="font-semibold text-slate-800">{booking.checkOutDate ? format(parseISO(booking.checkOutDate), 'MMM dd, yyyy') : 'N/A'}</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 text-sm mt-2 mb-4">
-                  <div>
-                    <p className="text-gray-500 mb-1">Check-in</p>
-                    <p className="font-semibold text-gray-900">{booking.checkInDate ? format(parseISO(booking.checkInDate), 'MMM dd, yyyy') : 'N/A'}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-500 mb-1">Check-out</p>
-                    <p className="font-semibold text-gray-900">{booking.checkOutDate ? format(parseISO(booking.checkOutDate), 'MMM dd, yyyy') : 'N/A'}</p>
-                  </div>
+                <div className="flex items-center gap-4 mt-6 text-xs text-slate-400">
+                  <span>Ref: #{booking.id}</span>
+                  {booking.createdAt && (
+                    <>
+                      <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                      <span>Booked: {format(parseISO(booking.createdAt), 'MMM dd, yyyy HH:mm')}</span>
+                    </>
+                  )}
                 </div>
               </div>
 
-              <div className="bg-gray-50 p-6 sm:w-64 border-t sm:border-t-0 sm:border-l border-gray-100 flex flex-col justify-between">
-                <div>
-                  <p className="text-gray-500 text-sm mb-1">Total Amount</p>
-                  <p className="text-2xl font-bold text-blue-600">${booking.totalPrice}</p>
+              <div className="bg-slate-50 p-6 md:p-8 md:w-72 border-t md:border-t-0 md:border-l border-slate-100 flex flex-col justify-between">
+                <div className="hidden md:flex justify-end mb-6">
+                  <StatusBadge status={booking.status || 'CONFIRMED'} />
                 </div>
                 
-                {(!booking.status || booking.status === 'CONFIRMED' || booking.status === 'PENDING') && (
+                <div>
+                  <p className="text-slate-500 text-sm font-medium mb-1">Total Amount</p>
+                  <p className="text-3xl font-extrabold text-slate-900">${booking.totalPrice}</p>
+                </div>
+                
+                {(!booking.status || booking.status === 'PENDING') && (
                   <button 
                     onClick={() => handleCancelClick(booking)}
-                    className="mt-6 w-full flex items-center justify-center text-red-600 bg-red-50 hover:bg-red-100 font-medium py-2.5 px-4 rounded-lg transition-colors"
+                    className="mt-8 w-full flex items-center justify-center gap-2 text-rose-600 bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200 shadow-sm font-semibold py-3 px-4 rounded-xl transition-all duration-200 ease-out"
                   >
-                    <Trash2 className="w-4 h-4 mr-2" />
-                    Cancel Booking
+                    <Trash2 className="w-4 h-4" />
+                    Cancel
                   </button>
                 )}
               </div>
@@ -135,31 +193,29 @@ const MyBookingsPage = () => {
 
       {/* Cancel Confirmation Modal */}
       {selectedBookingToCancel && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="p-6">
-              <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-4 text-red-600">
-                <AlertCircle className="w-6 h-6" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-opacity">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="p-8">
+              <div className="w-16 h-16 rounded-2xl bg-rose-50 flex items-center justify-center mb-6 text-rose-500 mx-auto">
+                <AlertCircle className="w-8 h-8" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Cancel Booking?</h3>
-              <p className="text-gray-600 mb-6">
-                Are you sure you want to cancel your reservation for 
-                <span className="font-semibold text-gray-900"> Room #{selectedBookingToCancel.roomId}</span>? 
-                This action cannot be undone.
+              <h3 className="text-2xl font-bold text-center text-slate-900 mb-2">Cancel Booking?</h3>
+              <p className="text-slate-500 text-center mb-8">
+                Are you sure you want to cancel your stay at <strong className="text-slate-800">{selectedBookingToCancel.hotelName || 'this hotel'}</strong>? This action cannot be undone.
               </p>
               
               <div className="flex gap-3">
                 <button 
                   onClick={() => setSelectedBookingToCancel(null)}
                   disabled={cancelMutation.isPending}
-                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2.5 rounded-lg transition-colors disabled:opacity-50"
+                  className="flex-1 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold py-3 rounded-xl transition-colors disabled:opacity-50 shadow-sm"
                 >
-                  Keep Booking
+                  Keep It
                 </button>
                 <button 
                   onClick={confirmCancel}
                   disabled={cancelMutation.isPending}
-                  className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 rounded-lg transition-colors flex items-center justify-center disabled:opacity-70"
+                  className="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-semibold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm shadow-rose-200 hover:shadow-md disabled:opacity-70"
                 >
                   {cancelMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Yes, Cancel'}
                 </button>

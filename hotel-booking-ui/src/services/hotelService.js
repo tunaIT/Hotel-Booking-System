@@ -55,6 +55,38 @@ const hotelService = {
       console.error(`Error fetching reviews for hotel ${id}:`, error);
       throw error;
     }
+  },
+  // Admin: Create Hotel
+  createHotel: async (hotelData) => {
+    try {
+      const response = await api.post('/admin/hotels', hotelData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating hotel:', error);
+      throw error;
+    }
+  },
+
+  // Admin: Update Hotel
+  updateHotel: async (id, hotelData) => {
+    try {
+      const response = await api.put(`/admin/hotels/${id}`, hotelData);
+      return response.data;
+    } catch (error) {
+      console.error(`Error updating hotel ${id}:`, error);
+      throw error;
+    }
+  },
+
+  // Admin: Delete Hotel
+  deleteHotel: async (id) => {
+    try {
+      const response = await api.delete(`/admin/hotels/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error deleting hotel ${id}:`, error);
+      throw error;
+    }
   }
 };
 

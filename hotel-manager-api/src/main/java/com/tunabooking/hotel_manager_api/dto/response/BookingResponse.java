@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -16,10 +17,14 @@ import java.time.LocalDate;
 public class BookingResponse {
 
     private Long id;
-    private Long userId;
-    private Long roomId;
+    private String roomType;
+    private String hotelName;
+    private String hotelCity;
+    private Double hotelRating;
+    private Integer roomCapacity;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
     private BigDecimal totalPrice;
     private BookingStatus status;
+    private LocalDateTime createdAt;
 }

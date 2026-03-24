@@ -76,12 +76,14 @@ const Navbar = () => {
                   <Calendar size={18} />
                   <span>My Bookings</span>
                 </Link>
-                <div className={`flex items-center space-x-2 font-medium text-sm ${textColor}`}>
-                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold border border-blue-200">
+                
+                <Link to="/profile" className={`flex items-center space-x-2 font-bold text-sm hover:opacity-80 transition-opacity ${textColor}`}>
+                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold border border-blue-200 shadow-inner">
                     {user?.username?.charAt(0).toUpperCase() || 'U'}
                   </div>
                   <span>{user?.username}</span>
-                </div>
+                </Link>
+
                 <button
                   onClick={handleLogout}
                   className="flex items-center space-x-1.5 text-sm font-medium text-red-500 hover:text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors border border-red-100"
@@ -130,6 +132,7 @@ const Navbar = () => {
                  {isAdmin && (
                    <Link to="/admin" onClick={() => setMobileMenuOpen(false)} className="text-purple-700 font-bold flex items-center"><ShieldAlert size={18} className="mr-2"/> Admin Panel</Link>
                  )}
+                 <Link to="/profile" onClick={() => setMobileMenuOpen(false)} className="text-gray-800 font-medium flex items-center"><User size={18} className="mr-2"/> My Profile</Link>
                  <Link to="/my-bookings" onClick={() => setMobileMenuOpen(false)} className="text-gray-800 font-medium flex items-center"><Calendar size={18} className="mr-2"/> My Bookings</Link>
                  <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="text-red-600 font-medium text-left flex items-center"><LogOut size={18} className="mr-2"/> Logout</button>
               </>

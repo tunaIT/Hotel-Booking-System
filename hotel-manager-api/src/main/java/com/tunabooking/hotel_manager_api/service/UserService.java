@@ -7,6 +7,8 @@ import com.tunabooking.hotel_manager_api.entity.User;
 import com.tunabooking.hotel_manager_api.exception.UserNotFoundException;
 import com.tunabooking.hotel_manager_api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
 
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
     @Transactional
@@ -24,8 +27,8 @@ public class UserService {
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
-                .password(request.getPassword()) 
-                                                 // 
+                .password(request.getPassword())
+                //
                 .build();
 
         User savedUser = userRepository.save(user);
@@ -57,7 +60,7 @@ public class UserService {
             user.setEmail(request.getEmail());
         }
         if (request.getPassword() != null) {
-            user.setPassword(request.getPassword()); // Remember to hash this in a real app
+            user.setPassword(passwordEncoder.encode(request.getPassword())); // Remember to hash this in a real app
         }
 
         User updatedUser = userRepository.save(user);
@@ -76,6 +79,7 @@ public class UserService {
                 .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
+                .role(user.getRole())
                 .createdAt(user.getCreatedAt())
                 .build();
     }
