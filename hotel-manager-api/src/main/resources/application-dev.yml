@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://dpg-d6p6dhpj16oc738tb6k0-a.singapore-postgres.render.com/hotelbookingdb_bgo8}
+    username: ${DB_USERNAME:hotelbookingdb_bgo8_user}
+    password: ${DB_PASSWORD:9D2bnfM6A94pCkhKQmPFsCi3RDFImori}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+application:
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}

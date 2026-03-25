@@ -5,6 +5,7 @@ import com.tunabooking.hotel_manager_api.dto.response.RoomResponse;
 import com.tunabooking.hotel_manager_api.entity.Hotel;
 import com.tunabooking.hotel_manager_api.entity.Room;
 import com.tunabooking.hotel_manager_api.exception.HotelNotFoundException;
+import com.tunabooking.hotel_manager_api.exception.RoomNotFoundException;
 import com.tunabooking.hotel_manager_api.repository.HotelRepository;
 import com.tunabooking.hotel_manager_api.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +48,31 @@ public class RoomService {
 
         Room savedRoom = roomRepository.save(room);
         return mapToRoomResponse(savedRoom);
+    }
+
+    @Transactional
+    public RoomResponse updateRoom(Long id, RoomRequest request) {
+        Room room = roomRepository.findById(id)
+                .orElseThrow(() -> new RoomNotFoundException("Room not found with id: " + id));
+        
+        Hotel hotel = hotelRepository.findById(request.getHotelId())
+                .orElseThrow(() -> new HotelNotFoundException("Hotel not found with id: " + request.getHotelId()));
+
+        room.setHotel(hotel);
+        room.setRoomType(request.getRoomType());
+        room.setPrice(request.getPrice());
+        room.setCapacity(request.getCapacity());
+        room.setDescription(request.getDescription());
+
+        Room updatedRoom = roomRepository.save(room);
+        return mapToRoomResponse(updatedRoom);
+    }
+
+    @Transactional
+    public void deleteRoom(Long id) {
+        Room room = roomRepository.findById(id)
+                .orElseThrow(() -> new RoomNotFoundException("Room not found with id: " + id));
+        roomRepository.delete(room);
     }
 
     private RoomResponse mapToRoomResponse(Room room) {

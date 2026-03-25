@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import hotelService from '../../services/hotelService';
-import { Plus, PencilLine, Trash2, ArrowLeft, X, Hotel } from 'lucide-react';
+import { Plus, PencilLine, Trash2, ArrowLeft, X, Hotel, DoorOpen } from 'lucide-react';
+import RoomManagementModal from './RoomManagementModal';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,6 +18,7 @@ const HotelManagement = () => {
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingHotel, setEditingHotel] = useState(null);
+  const [selectedHotelForRooms, setSelectedHotelForRooms] = useState(null);
   const [formData, setFormData] = useState({ 
     name: '', 
     city: '', 
@@ -150,10 +152,13 @@ const HotelManagement = () => {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex justify-end gap-2">
-                          <button onClick={() => handleEdit(hotel)} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                          <button onClick={() => setSelectedHotelForRooms(hotel)} className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="Manage Rooms">
+                            <DoorOpen size={18} />
+                          </button>
+                          <button onClick={() => handleEdit(hotel)} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit Hotel">
                             <PencilLine size={18} />
                           </button>
-                          <button onClick={() => handleDelete(hotel.id)} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                          <button onClick={() => handleDelete(hotel.id)} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete Hotel">
                             <Trash2 size={18} />
                           </button>
                         </div>
@@ -224,9 +229,18 @@ const HotelManagement = () => {
                      {editingHotel ? 'Save Changes' : 'Create Hotel'}
                    </button>
                 </div>
-             </form>
+              </form>
           </div>
         </div>
+      )}
+
+      {/* Room Management Modal */}
+      {selectedHotelForRooms && (
+        <RoomManagementModal 
+          hotelId={selectedHotelForRooms.id} 
+          hotelName={selectedHotelForRooms.name} 
+          onClose={() => setSelectedHotelForRooms(null)} 
+        />
       )}
     </div>
   );

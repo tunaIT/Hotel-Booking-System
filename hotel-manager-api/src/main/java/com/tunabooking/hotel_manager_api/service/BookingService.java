@@ -1,6 +1,7 @@
 package com.tunabooking.hotel_manager_api.service;
 
 import com.tunabooking.hotel_manager_api.dto.request.BookingRequest;
+import com.tunabooking.hotel_manager_api.dto.request.UpdateBookingStatusRequest;
 import com.tunabooking.hotel_manager_api.dto.response.BookingResponse;
 import com.tunabooking.hotel_manager_api.entity.Booking;
 import com.tunabooking.hotel_manager_api.entity.BookingStatus;
@@ -103,6 +104,7 @@ public class BookingService {
         private BookingResponse mapToResponse(Booking booking) {
                 return BookingResponse.builder()
                                 .id(booking.getId())
+                                .userEmail(booking.getUser().getEmail())
                                 .roomType(booking.getRoom().getRoomType())
                                 .hotelName(booking.getRoom().getHotel().getName())
                                 .hotelCity(booking.getRoom().getHotel().getCity())
@@ -114,5 +116,28 @@ public class BookingService {
                                 .status(booking.getStatus())
                                 .createdAt(booking.getCreatedAt())
                                 .build();
+        }
+
+        @Transactional(readOnly = true)
+        public List<BookingResponse> getAllBookings() {
+                return bookingRepository.findAll().stream()
+                                .map(this::mapToResponse)
+                                .toList();
+        }
+
+        @Transactional(readOnly = true)
+        public BookingResponse getBookingById(Long id) {
+                Booking booking = bookingRepository.findById(id)
+                                .orElseThrow(() -> new BookingNotFoundException("Booking not found with ID: " + id));
+                return mapToResponse(booking);
+        }
+
+        @Transactional
+        public BookingResponse updateBookingStatus(Long id, UpdateBookingStatusRequest request) {
+                Booking booking = bookingRepository.findById(id)
+                                .orElseThrow(() -> new BookingNotFoundException("Booking not found with ID: " + id));
+                booking.setStatus(request.getStatus());
+                Booking updatedBooking = bookingRepository.save(booking);
+                return mapToResponse(updatedBooking);
         }
 }

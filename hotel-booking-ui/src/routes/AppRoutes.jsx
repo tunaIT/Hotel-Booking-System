@@ -10,6 +10,7 @@ import MyBookingsPage from '../pages/MyBookingsPage';
 import AdminDashboard from '../pages/AdminDashboard';
 import UserManagement from '../pages/admin/UserManagement';
 import HotelManagement from '../pages/admin/HotelManagement';
+import AdminBookings from '../pages/admin/AdminBookings';
 import UserProfile from '../pages/UserProfile';
 import ProtectedRoute from './ProtectedRoute';
 import MainLayout from '../components/layout/MainLayout';
@@ -52,6 +53,7 @@ const AppRoutes = () => {
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<UserManagement />} />
           <Route path="/admin/hotels" element={<HotelManagement />} />
+          <Route path="/admin/bookings" element={<AdminBookings />} />
           {/* Add more protected routes here like /bookings */}
         </Route>
       </Route>

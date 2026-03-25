@@ -34,7 +34,7 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center space-x-4 cursor-pointer hover:shadow-md transition-shadow">
+          <div onClick={() => window.location.href='/admin/bookings'} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center space-x-4 cursor-pointer hover:shadow-md transition-shadow ring-2 ring-transparent hover:ring-green-200">
             <div className="bg-green-100 p-4 rounded-xl">
               <CalendarCheck className="w-8 h-8 text-green-600" />
             </div>
