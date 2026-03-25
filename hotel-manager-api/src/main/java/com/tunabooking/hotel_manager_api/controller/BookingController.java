@@ -2,6 +2,7 @@ package com.tunabooking.hotel_manager_api.controller;
 
 import com.tunabooking.hotel_manager_api.dto.request.BookingRequest;
 import com.tunabooking.hotel_manager_api.dto.response.BookingResponse;
+import com.tunabooking.hotel_manager_api.dto.response.ApiResponse;
 import com.tunabooking.hotel_manager_api.service.BookingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -30,22 +31,22 @@ public class BookingController {
 
     @Operation(summary = "Create a new booking", description = "Book a room for specific dates")
     @PostMapping
-    public ResponseEntity<BookingResponse> createBooking(@Valid @RequestBody BookingRequest request) {
+    public ResponseEntity<ApiResponse<BookingResponse>> createBooking(@Valid @RequestBody BookingRequest request) {
         BookingResponse response = bookingService.createBooking(request);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(ApiResponse.success("Booking created successfully", response), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Get my bookings", description = "Get all bookings for the currently authenticated user")
     @GetMapping("/my")
-    public ResponseEntity<List<BookingResponse>> getMyBookings() {
+    public ResponseEntity<ApiResponse<List<BookingResponse>>> getMyBookings() {
         List<BookingResponse> responses = bookingService.getMyBookings();
-        return ResponseEntity.ok(responses);
+        return ResponseEntity.ok(ApiResponse.success("Bookings retrieved successfully", responses));
     }
 
     @Operation(summary = "Delete a booking", description = "Delete a booking by its ID")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBooking(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteBooking(@PathVariable Long id) {
         bookingService.deleteBooking(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success("Booking deleted successfully", null));
     }
 }

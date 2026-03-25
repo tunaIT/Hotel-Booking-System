@@ -2,6 +2,7 @@ package com.tunabooking.hotel_manager_api.controller.admin;
 
 import com.tunabooking.hotel_manager_api.dto.request.HotelRequest;
 import com.tunabooking.hotel_manager_api.dto.response.HotelResponse;
+import com.tunabooking.hotel_manager_api.dto.response.ApiResponse;
 import com.tunabooking.hotel_manager_api.service.HotelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,23 +21,23 @@ public class AdminHotelController {
 
     @Operation(summary = "Create a new hotel", description = "Add a new hotel to the system")
     @PostMapping
-    public ResponseEntity<HotelResponse> createHotel(@Valid @RequestBody HotelRequest request) {
+    public ResponseEntity<ApiResponse<HotelResponse>> createHotel(@Valid @RequestBody HotelRequest request) {
         HotelResponse response = hotelService.createHotel(request);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(ApiResponse.success("Hotel created successfully", response), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Update a hotel", description = "Update the details of an existing hotel by its ID")
     @PutMapping("/{id}")
-    public ResponseEntity<HotelResponse> updateHotel(
+    public ResponseEntity<ApiResponse<HotelResponse>> updateHotel(
             @PathVariable Long id,
             @Valid @RequestBody HotelRequest request) {
-        return ResponseEntity.ok(hotelService.updateHotel(id, request));
+        return ResponseEntity.ok(ApiResponse.success("Hotel updated successfully", hotelService.updateHotel(id, request)));
     }
 
     @Operation(summary = "Delete a hotel", description = "Remove a hotel from the system by its ID")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteHotel(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteHotel(@PathVariable Long id) {
         hotelService.deleteHotel(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success("Hotel deleted successfully", null));
     }
 }

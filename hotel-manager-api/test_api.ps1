@@ -5,12 +5,12 @@ Start-Sleep -Seconds 10
 echo "=== 1. Register User ==="
 $regBody = @{ name="Tuan"; email="tuan@tuna.com"; password="password" } | ConvertTo-Json
 $regRes = Invoke-RestMethod -Method Post -Uri "http://localhost:8080/auth/register" -Body $regBody -ContentType "application/json"
-echo "Register Response Token: $($regRes.token.Substring(0, 15))..."
+echo "Register Response Token: $($regRes.data.token.Substring(0, 15))..."
 
 echo "=== 2. Login User ==="
 $logBody = @{ email="tuan@tuna.com"; password="password" } | ConvertTo-Json
 $logRes = Invoke-RestMethod -Method Post -Uri "http://localhost:8080/auth/login" -Body $logBody -ContentType "application/json"
-$token = $logRes.token
+$token = $logRes.data.token
 echo "Login Response Token: $($token.Substring(0, 15))..."
 
 echo "=== 3. Access Protected API ==="

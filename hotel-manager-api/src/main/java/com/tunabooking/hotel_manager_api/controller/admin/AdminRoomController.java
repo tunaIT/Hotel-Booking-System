@@ -2,6 +2,7 @@ package com.tunabooking.hotel_manager_api.controller.admin;
 
 import com.tunabooking.hotel_manager_api.dto.request.RoomRequest;
 import com.tunabooking.hotel_manager_api.dto.response.RoomResponse;
+import com.tunabooking.hotel_manager_api.dto.response.ApiResponse;
 import com.tunabooking.hotel_manager_api.service.RoomService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -19,23 +20,23 @@ public class AdminRoomController {
 
     @Operation(summary = "Create a new room", description = "Add a new room to an existing hotel")
     @PostMapping
-    public ResponseEntity<RoomResponse> createRoom(@Valid @RequestBody RoomRequest request) {
+    public ResponseEntity<ApiResponse<RoomResponse>> createRoom(@Valid @RequestBody RoomRequest request) {
         RoomResponse response = roomService.createRoom(request);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(ApiResponse.success("Room created successfully", response), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Update room", description = "Update details of an existing room")
     @PutMapping("/{id}")
-    public ResponseEntity<RoomResponse> updateRoom(
+    public ResponseEntity<ApiResponse<RoomResponse>> updateRoom(
             @PathVariable Long id,
             @Valid @RequestBody RoomRequest request) {
-        return ResponseEntity.ok(roomService.updateRoom(id, request));
+        return ResponseEntity.ok(ApiResponse.success("Room updated successfully", roomService.updateRoom(id, request)));
     }
 
     @Operation(summary = "Delete room", description = "Remove a room from the system")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRoom(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteRoom(@PathVariable Long id) {
         roomService.deleteRoom(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success("Room deleted successfully", null));
     }
 }

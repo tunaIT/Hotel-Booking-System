@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tunabooking.hotel_manager_api.dto.request.ReviewRequest;
 import com.tunabooking.hotel_manager_api.dto.response.ReviewResponse;
+import com.tunabooking.hotel_manager_api.dto.response.ApiResponse;
 import com.tunabooking.hotel_manager_api.service.ReviewService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,8 +23,8 @@ public class ReviewController {
 
     @Operation(summary = "create a review", description = "create a review for the hotel which user has booked")
     @PostMapping
-    public ResponseEntity<ReviewResponse> createReview(@Valid @RequestBody ReviewRequest request) {
-        return ResponseEntity.ok(reviewService.createReview(request));
+    public ResponseEntity<ApiResponse<ReviewResponse>> createReview(@Valid @RequestBody ReviewRequest request) {
+        return ResponseEntity.ok(ApiResponse.success("Review created successfully", reviewService.createReview(request)));
     }
 
 }
