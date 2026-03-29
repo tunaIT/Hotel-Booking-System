@@ -22,7 +22,8 @@ const LoginForm = () => {
     
     try {
       const response = await loginApi(formData);
-      const token = response?.token || response; 
+      // The backend returns an ApiResponse<AuthResponse>: { success, message, data: { token } }
+      const token = response?.data?.token || response?.token || response; 
       login(token);
       navigate('/');
     } catch (err) {

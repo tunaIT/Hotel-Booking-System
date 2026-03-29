@@ -39,6 +39,7 @@ public class AuthService {
                 
                 var extraClaims = new java.util.HashMap<String, Object>();
                 extraClaims.put("roles", java.util.List.of("ROLE_" + user.getRole().name()));
+                extraClaims.put("id", user.getId());
                 var jwtToken = jwtService.generateToken(extraClaims, user);
 
                 return AuthResponse.builder()
@@ -57,6 +58,7 @@ public class AuthService {
 
                 var extraClaims = new java.util.HashMap<String, Object>();
                 extraClaims.put("roles", java.util.List.of("ROLE_" + user.getRole().name()));
+                extraClaims.put("id", user.getId());
                 var jwtToken = jwtService.generateToken(extraClaims, user);
 
                 return AuthResponse.builder()

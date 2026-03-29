@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
           if (decoded.exp * 1000 < Date.now()) {
             logout();
           } else {
-            setUser({ username: decoded.sub, roles: decoded.roles || [] });
+            setUser({ id: decoded.id, username: decoded.sub, roles: decoded.roles || [] });
           }
         } catch (error) {
           logout();
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
     setToken(token);
     try {
       const decoded = jwtDecode(token);
-      setUser({ username: decoded.sub, roles: decoded.roles || [] });
+      setUser({ id: decoded.id, username: decoded.sub, roles: decoded.roles || [] });
     } catch (e) {
       console.error('Invalid token');
     }
