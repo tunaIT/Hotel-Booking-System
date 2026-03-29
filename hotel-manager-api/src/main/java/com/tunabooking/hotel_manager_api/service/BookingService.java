@@ -80,7 +80,7 @@ public class BookingService {
                 User currentUser = userRepository.findByEmail(email)
                                 .orElseThrow(() -> new UserNotFoundException("Current user not found"));
 
-                return bookingRepository.findByUserId(currentUser.getId()).stream()
+                return bookingRepository.findByUserIdWithDetails(currentUser.getId()).stream()
                                 .map(this::mapToResponse)
                                 .toList();
         }
@@ -120,7 +120,7 @@ public class BookingService {
 
         @Transactional(readOnly = true)
         public List<BookingResponse> getAllBookings() {
-                return bookingRepository.findAll().stream()
+                return bookingRepository.findAllWithDetails().stream()
                                 .map(this::mapToResponse)
                                 .toList();
         }

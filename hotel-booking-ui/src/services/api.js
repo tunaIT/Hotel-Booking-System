@@ -25,6 +25,12 @@ api.interceptors.request.use(
 // Response interceptor
 api.interceptors.response.use(
   (response) => {
+    // Unwrap backend ApiResponse structure if present
+    if (response.data && typeof response.data === 'object' && 'success' in response.data) {
+      if ('data' in response.data) {
+        response.data = response.data.data;
+      }
+    }
     return response;
   },
   (error) => {
