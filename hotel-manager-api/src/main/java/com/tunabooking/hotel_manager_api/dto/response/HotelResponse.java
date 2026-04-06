@@ -7,12 +7,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.io.Serializable;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class HotelResponse {
+public class HotelResponse implements Serializable {
 
     @Schema(description = "Hotel ID", example = "1")
     private Long id;
