@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.cache.annotation.CacheEvict;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +35,7 @@ public class RoomService {
     }
 
     @Transactional
+    @CacheEvict(value = "hotels_search", allEntries = true)
     public RoomResponse createRoom(RoomRequest request) {
         Hotel hotel = hotelRepository.findById(request.getHotelId())
                 .orElseThrow(() -> new HotelNotFoundException("Hotel not found with id: " + request.getHotelId()));
@@ -51,6 +53,7 @@ public class RoomService {
     }
 
     @Transactional
+    @CacheEvict(value = "hotels_search", allEntries = true)
     public RoomResponse updateRoom(Long id, RoomRequest request) {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new RoomNotFoundException("Room not found with id: " + id));
@@ -69,6 +72,7 @@ public class RoomService {
     }
 
     @Transactional
+    @CacheEvict(value = "hotels_search", allEntries = true)
     public void deleteRoom(Long id) {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new RoomNotFoundException("Room not found with id: " + id));

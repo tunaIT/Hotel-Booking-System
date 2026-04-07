@@ -19,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 
 import com.tunabooking.hotel_manager_api.specification.HotelSpecification;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +34,7 @@ public class HotelService {
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(value = "hotels_search", key = "{#city, #minPrice, #maxPrice, #capacity, #page, #size}")
     public Page<HotelResponse> searchHotels(String city, BigDecimal minPrice, BigDecimal maxPrice, Integer capacity, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         
@@ -50,6 +53,7 @@ public class HotelService {
     }
 
     @Transactional
+    @CacheEvict(value = "hotels_search", allEntries = true)
     public HotelResponse createHotel(HotelRequest request) {
         Hotel hotel = Hotel.builder()
                 .name(request.getName())
@@ -63,6 +67,7 @@ public class HotelService {
     }
 
     @Transactional
+    @CacheEvict(value = "hotels_search", allEntries = true)
     public HotelResponse updateHotel(Long id, HotelRequest request) {
         Hotel hotel = getHotelEntityById(id);
 
@@ -80,6 +85,7 @@ public class HotelService {
     }
 
     @Transactional
+    @CacheEvict(value = "hotels_search", allEntries = true)
     public void deleteHotel(Long id) {
         Hotel hotel = getHotelEntityById(id);
         hotelRepository.delete(hotel);
