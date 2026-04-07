@@ -19,8 +19,10 @@ Designed with modern UI aesthetics and built on a highly scalable Spring Boot ba
 ### Backend (`hotel-manager-api`)
 - **Framework**: Java 17 & Spring Boot 3
 - **Security**: Spring Security & JWT Authentication
-- **Database Access**: Spring Data JPA
+- **Database**: PostgreSQL & Spring Data JPA
+- **Caching**: Redis Cache (improves search performance)
 - **API Documentation**: Swagger / OpenAPI 3
+- **API Standard**: Generic `ApiResponse<T>` wrapper for consistent frontend-backend communication
 - **Build Tool**: Maven
 
 ---
@@ -49,7 +51,8 @@ The application follows a standard decoupled Client-Server architecture:
 1. **Client Layer**: A React Single Page Application (SPA) that consumes RESTful APIs. It manages its own routing and uses React Query for intelligent caching and state management.
 2. **API Layer**: A Spring Boot application exposing REST endpoints. It acts as the gateway to the database, enforcing business logic and validation.
 3. **Security Layer**: Stateless JWT authentication intercepts incoming requests. Role-based Access Control (RBAC) restricts sensitive endpoints (e.g., `/admin/**`) to administrators only.
-4. **Data Layer**: Relational database modeling using JPA/Hibernate to maintain referential integrity between Users, Hotels, Rooms, Bookings, and Reviews.
+4. **Data Layer**: PostgreSQL database modeling using JPA/Hibernate to maintain referential integrity between Users, Hotels, Rooms, Bookings, and Reviews.
+5. **Caching Layer**: Redis is employed for caching frequently accessed data (like hotel searches), significantly speeding up response times.
 
 ---
 
@@ -72,6 +75,8 @@ The backend API is fully documented using Swagger UI. Once the backend is runnin
 - Node.js (v18+)
 - Java JDK 17+
 - Maven (or use the provided wrapper)
+- PostgreSQL (or use the provided cloud DB config)
+- Redis Server (running on `localhost:6379`)
 
 ### 1. Run the Backend
 The backend application uses profile-based configurations (`dev`, `prod`) and relies on environment variables for sensitive data.
